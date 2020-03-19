@@ -1,5 +1,5 @@
 {
-  "name": "lentex/gauidgame-engine",
+  "name": "lentex/gaudigame-engine",
   "type": "package",
   "description": "The Gaudigame Engine",
   "require": {
