@@ -105,7 +105,7 @@ class MatchCalculatorTest extends TestCase
 
         $guess = $this->getScore(1, 1);
         $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForExactGap(), $evaluatedResult->getPoints());
+        $this->assertEquals((float) $this->calculationModel->getPointsForDrawGap(), $evaluatedResult->getPoints());
         $this->assertEquals($evaluatedResult->isExact(), false);
         $this->assertEquals($evaluatedResult->isGap(), true);
         $this->assertEquals($evaluatedResult->isTendency(), false);
@@ -115,7 +115,7 @@ class MatchCalculatorTest extends TestCase
 
         $guess = $this->getScore(3, 3);
         $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForExactGap(), $evaluatedResult->getPoints());
+        $this->assertEquals((float) $this->calculationModel->getPointsForDrawGap(), $evaluatedResult->getPoints());
         $this->assertEquals($evaluatedResult->isExact(), false);
         $this->assertEquals($evaluatedResult->isGap(), true);
         $this->assertEquals($evaluatedResult->isTendency(), false);

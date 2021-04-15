@@ -40,7 +40,11 @@ class MatchCalculator
 
         if ($this->isExactGap()) {
             $this->evaluatedResult->setToGap();
-            $this->raisePoints($this->calculationModel->getPointsForExactGap());
+            if ($this->isDrawGap()) {
+                $this->raisePoints($this->calculationModel->getPointsForDrawGap());
+            } else {
+                $this->raisePoints($this->calculationModel->getPointsForExactGap());
+            }
             return $this;
         }
 
@@ -90,6 +94,15 @@ class MatchCalculator
     private function isExactGap(): bool
     {
         if ($this->result->margin() === $this->guess->margin()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function isDrawGap(): bool
+    {
+        if (($this->result->margin() === $this->guess->margin()) && $this->result->isDraw() && $this->guess->isDraw()) {
             return true;
         }
 

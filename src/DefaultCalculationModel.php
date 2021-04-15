@@ -14,6 +14,11 @@ class DefaultCalculationModel implements CalculationModel
         return 2;
     }
 
+    public function getPointsForDrawGap(): int
+    {
+        return 1;
+    }
+
     public function getPointsForTendency(): int
     {
         return 1;
