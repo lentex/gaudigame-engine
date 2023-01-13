@@ -2,7 +2,9 @@
 
 namespace Lentex\Gaudigame\Engine;
 
-class Score
+use Lentex\Gaudigame\Engine\Contracts\Score as ScoreContract;
+
+class Score implements ScoreContract
 {
     private int $home;
     private int $away;
@@ -49,7 +51,7 @@ class Score
         return $this->margin;
     }
 
-    private function setupCalculationBasis()
+    private function setupCalculationBasis(): void
     {
         if ($this->home === $this->away) {
             $this->isDraw = true;
@@ -64,5 +66,10 @@ class Score
         }
 
         $this->margin = $this->home - $this->away;
+    }
+
+    public function canBeEvaluated(): bool
+    {
+        return true;
     }
 }

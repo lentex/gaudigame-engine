@@ -2,6 +2,8 @@
 
 namespace Lentex\Gaudigame\Engine;
 
+use Lentex\Gaudigame\Engine\Contracts\Score;
+
 class MatchCalculator
 {
     private const DEFAULT_POINTS = 0.0;
@@ -9,24 +11,22 @@ class MatchCalculator
 
     private float $points = self::DEFAULT_POINTS;
     private float $boost = self::DEFAULT_BOOST;
-    private CalculationModel $calculationModel;
     private EvaluatedResult $evaluatedResult;
     private Score $result;
-    private ?Score $guess;
+    private Score $guess;
 
-    public function __construct(CalculationModel $calculationModel)
+    public function __construct(private readonly CalculationModel $calculationModel)
     {
-        $this->calculationModel = $calculationModel;
         $this->evaluatedResult = new EvaluatedResult();
     }
 
-    public function process(Score $result, ?Score $guess): MatchCalculator
+    public function process(Score $result, Score $guess = new NoScore()): MatchCalculator
     {
         $this->reset();
         $this->result = $result;
         $this->guess = $guess;
 
-        if (is_null($guess)) {
+        if (! $guess->canBeEvaluated()) {
             $this->evaluatedResult->setToNo();
             $this->raisePoints($this->calculationModel->getPointsForNoGuess());
             return $this;
@@ -74,7 +74,7 @@ class MatchCalculator
         return $this->evaluatedResult;
     }
 
-    private function reset()
+    private function reset(): void
     {
         $this->points = self::DEFAULT_POINTS;
         $this->boost = self::DEFAULT_BOOST;
@@ -116,10 +116,6 @@ class MatchCalculator
         }
 
         if ($this->result->isAwayWin() && $this->guess->isAwayWin()) {
-            return true;
-        }
-
-        if ($this->result->isDraw() && $this->guess->isDraw()) {
             return true;
         }
 
