@@ -2,6 +2,8 @@
 
 namespace Lentex\Gaudigame\Engine;
 
+use Lentex\Gaudigame\Engine\Contracts\CalculationModel;
+
 class DefaultCalculationModel implements CalculationModel
 {
     public function getPointsForExactGuess(): int

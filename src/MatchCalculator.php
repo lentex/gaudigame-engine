@@ -2,6 +2,7 @@
 
 namespace Lentex\Gaudigame\Engine;
 
+use Lentex\Gaudigame\Engine\Contracts\CalculationModel;
 use Lentex\Gaudigame\Engine\Contracts\Score;
 
 class MatchCalculator
