@@ -1,6 +1,6 @@
 <?php
 
-namespace Lentex\Gaudigame\Engine;
+namespace Lentex\Gaudigame\Engine\Contracts;
 
 interface CalculationModel
 {
