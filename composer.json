@@ -3,14 +3,12 @@
   "type": "package",
   "description": "The Gaudigame Engine",
   "require": {
-    "php": "^7.2.5"
+    "php": "^8.2"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.0"
-  },
-  "config": {
-    "optimize-autoloader": true,
-    "sort-packages": true
+    "laravel/pint": "^1.4",
+    "pestphp/pest": "^1.22",
+    "phpstan/phpstan": "^1.9"
   },
   "autoload": {
     "psr-4": {
@@ -22,5 +20,23 @@
       "Tests\\": "tests/"
     }
   },
-  "prefer-stable": true
+  "scripts": {
+    "analyse": "phpstan analyse src tests --memory-limit 512M",
+    "lint": "pint --test",
+    "lint:verbose": "pint -v --test",
+    "fix": "pint",
+    "test": "pest",
+    "coverage": "pest --coverage --ci --coverage-html coverage --coverage-clover coverage.xml --log-junit junit.xml",
+    "report": "pest --coverage",
+    "report:html": "pest --coverage --coverage-html coverage"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+  "prefer-stable": true,
+  "minimum-stability": "stable"
 }

@@ -2,230 +2,152 @@
 
 namespace Tests;
 
-use Lentex\Gaudigame\Engine\CalculationModel;
 use Lentex\Gaudigame\Engine\DefaultCalculationModel;
 use Lentex\Gaudigame\Engine\MatchCalculator;
-use Lentex\Gaudigame\Engine\Score;
-use PHPUnit\Framework\TestCase;
 
-class MatchCalculatorTest extends TestCase
-{
-    private MatchCalculator $matchCalculator;
-    private CalculationModel $calculationModel;
+beforeEach(function () {
+    $this->matchCalculator = new MatchCalculator(new DefaultCalculationModel());
+});
 
-    protected function setUp(): void
-    {
-        $this->calculationModel = new DefaultCalculationModel();
-        $this->matchCalculator = new MatchCalculator($this->calculationModel);
-    }
+it('processes no guess', function () {
+    $evaluatedResult = $this->matchCalculator->process(getScore(3, 1))->get();
 
-    public function testProcessNoGuess(): void
-    {
-        $result = $this->getScore(3, 1);
-        $guess = null;
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForNoGuess(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), true);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
-    }
+    expect($evaluatedResult)
+        ->toBeNoGuess()
+        ->toHaveNoBoost();
+});
 
-    public function testProcessHomeWin(): void
-    {
-        $result = $this->getScore(3, 1);
+it('processes home win', function () {
+    $homeWinScore = getScore(3, 1);
 
-        $guess = $this->getScore(3, 1);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForExactGuess(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), true);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
+    // exact
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(3, 1))->get();
 
-        $guess = $this->getScore(1, 3);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForWrongGuess(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), true);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
+    expect($evaluatedResult)
+        ->toBeExactGuess()
+        ->toHaveNoBoost();
 
+    // wrong
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(1, 3))->get();
 
-        $guess = $this->getScore(2, 0);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForExactGap(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), true);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
+    expect($evaluatedResult)
+        ->toBeWrongGuess()
+        ->toHaveNoBoost();
 
-        $guess = $this->getScore(1, 0);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForTendency(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), true);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
-    }
+    // exact gap
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(2, 0))->get();
 
-    public function testProcessDraw(): void
-    {
-        $result = $this->getScore(2, 2);
+    expect($evaluatedResult)
+        ->toBeExactGapGuess()
+        ->toHaveNoBoost();
 
-        $guess = $this->getScore(2, 2);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForExactGuess(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), true);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
+    // correct tendency
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(1, 0))->get();
 
-        $guess = $this->getScore(1, 3);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForWrongGuess(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), true);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
+    expect($evaluatedResult)
+        ->toBeCorrectTendencyGuess()
+        ->toHaveNoBoost();
+});
 
-        $guess = $this->getScore(1, 1);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForDrawGap(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), true);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
+it('processes draw', function () {
+    $homeWinScore = getScore(2, 2);
 
-        $guess = $this->getScore(3, 3);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForDrawGap(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), true);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
-    }
+    // exact
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(2, 2))->get();
 
-    public function testProcessAwayWin(): void
-    {
-        $result = $this->getScore(1, 3);
+    expect($evaluatedResult)
+        ->toBeExactGuess()
+        ->toHaveNoBoost();
 
-        $guess = $this->getScore(1, 3);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForExactGuess(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), true);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
+    // wrong
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(1, 3))->get();
 
-        $guess = $this->getScore(2, 2);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForWrongGuess(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), true);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
+    expect($evaluatedResult)
+        ->toBeWrongGuess()
+        ->toHaveNoBoost();
 
-        $guess = $this->getScore(0, 2);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForExactGap(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), true);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
+    // draw gap
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(1, 1))->get();
 
-        $guess = $this->getScore(0, 1);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->get();
-        $this->assertEquals((float) $this->calculationModel->getPointsForTendency(), $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), true);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), false);
-    }
+    expect($evaluatedResult)
+        ->toBeDrawGapGuess()
+        ->toHaveNoBoost();
 
-    public function testBoosting(): void
-    {
-        $result = $this->getScore(1, 3);
+    // draw gap
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(3, 3))->get();
 
-        $guess = $this->getScore(1, 3);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->boost(1.5)->get();
-        $this->assertEquals($this->calculationModel->getPointsForExactGuess() * 1.5, $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), true);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), true);
+    expect($evaluatedResult)
+        ->toBeDrawGapGuess()
+        ->toHaveNoBoost();
+});
 
-        $guess = $this->getScore(2, 2);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->boost(1.5)->get();
-        $this->assertEquals($this->calculationModel->getPointsForWrongGuess() * 1.5, $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), true);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), true);
+it('processes away win', function () {
+    $homeWinScore = getScore(1, 3);
 
-        $guess = $this->getScore(0, 2);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->boost(1.5)->get();
-        $this->assertEquals($this->calculationModel->getPointsForExactGap() * 1.5, $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), true);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), true);
+    // exact
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(1, 3))->get();
 
-        $guess = $this->getScore(0, 1);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->boost(1.5)->get();
-        $this->assertEquals($this->calculationModel->getPointsForTendency() * 1.5, $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), false);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), true);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), true);
+    expect($evaluatedResult)
+        ->toBeExactGuess()
+        ->toHaveNoBoost();
 
-        $guess = $this->getScore(1, 3);
-        $evaluatedResult = $this->matchCalculator->process($result, $guess)->boost(1.5)->boost(1.5)->get();
-        $this->assertEquals($this->calculationModel->getPointsForExactGuess() * 1.5, $evaluatedResult->getPoints());
-        $this->assertEquals($evaluatedResult->isExact(), true);
-        $this->assertEquals($evaluatedResult->isGap(), false);
-        $this->assertEquals($evaluatedResult->isTendency(), false);
-        $this->assertEquals($evaluatedResult->isWrong(), false);
-        $this->assertEquals($evaluatedResult->isNo(), false);
-        $this->assertEquals($evaluatedResult->hasBoost(), true);
-    }
+    // wrong
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(3, 1))->get();
 
-    private function getScore(int $home, int $away): Score
-    {
-        return new Score($home, $away);
-    }
-}
+    expect($evaluatedResult)
+        ->toBeWrongGuess()
+        ->toHaveNoBoost();
+
+    // exact gap
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(0, 2))->get();
+
+    expect($evaluatedResult)
+        ->toBeExactGapGuess()
+        ->toHaveNoBoost();
+
+    // correct tendency
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(0, 1))->get();
+
+    expect($evaluatedResult)
+        ->toBeCorrectTendencyGuess()
+        ->toHaveNoBoost();
+});
+
+test('boosting', function () {
+    $homeWinScore = getScore(1, 3);
+
+    // exact with boost
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(1, 3))->boost(1.5)->get();
+
+    expect($evaluatedResult)
+        ->toBeExactGuess(1.5)
+        ->toHaveBoost();
+
+    // wrong with boost
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(3, 1))->boost(1.5)->get();
+
+    expect($evaluatedResult)
+        ->toBeWrongGuess()
+        ->toHaveBoost();
+
+    // exact gap with boost
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(0, 2))->boost(1.5)->get();
+
+    expect($evaluatedResult)
+        ->toBeExactGapGuess(1.5)
+        ->toHaveBoost();
+
+    // correct tendency with boost
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(0, 1))->boost(1.5)->get();
+
+    expect($evaluatedResult)
+        ->toBeCorrectTendencyGuess(1.5)
+        ->toHaveBoost();
+
+    // exact with double boost (double boost has no effect as it is overwritten
+    $evaluatedResult = $this->matchCalculator->process($homeWinScore, getScore(1, 3))->boost(1.5)->boost(1.5)->get();
+
+    expect($evaluatedResult)
+        ->toBeExactGuess(1.5)
+        ->toHaveBoost();
+});
