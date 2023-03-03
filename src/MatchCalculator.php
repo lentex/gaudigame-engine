@@ -89,37 +89,59 @@ class MatchCalculator
 
     private function isExactGuess(): bool
     {
-        return ($this->result->home() === $this->guess->home()) && ($this->result->away() === $this->guess->away());
+        return $this->hasSameHome() && $this->hasSameAway();
     }
 
     private function isExactGap(): bool
     {
-        if ($this->result->margin() === $this->guess->margin()) {
-            return true;
-        }
-
-        return false;
+        return $this->hasSameMargin();
     }
 
     private function isDrawGap(): bool
     {
-        if (($this->result->margin() === $this->guess->margin()) && $this->result->isDraw() && $this->guess->isDraw()) {
+        return $this->hasSameMargin() && $this->isDrawForBoth();
+    }
+
+    private function isCorrectTendency(): bool
+    {
+        if ($this->isHomeWinForBoth()) {
+            return true;
+        }
+
+        if ($this->isAwayWinForBoth()) {
             return true;
         }
 
         return false;
     }
 
-    private function isCorrectTendency(): bool
+    private function hasSameMargin(): bool
     {
-        if ($this->result->isHomeWin() && $this->guess->isHomeWin()) {
-            return true;
-        }
+        return $this->result->margin() === $this->guess->margin();
+    }
 
-        if ($this->result->isAwayWin() && $this->guess->isAwayWin()) {
-            return true;
-        }
+    private function isHomeWinForBoth(): bool
+    {
+        return $this->result->isHomeWin() && $this->guess->isHomeWin();
+    }
 
-        return false;
+    private function isAwayWinForBoth(): bool
+    {
+        return $this->result->isAwayWin() && $this->guess->isAwayWin();
+    }
+
+    private function isDrawForBoth(): bool
+    {
+        return $this->result->isDraw() && $this->guess->isDraw();
+    }
+
+    private function hasSameHome(): bool
+    {
+        return $this->result->home() === $this->guess->home();
+    }
+
+    private function hasSameAway(): bool
+    {
+        return $this->result->away() === $this->guess->away();
     }
 }
