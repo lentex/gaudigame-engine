@@ -3,7 +3,7 @@
   "type": "package",
   "description": "The Gaudigame Engine",
   "require": {
-    "php": "^8.2"
+    "php": "8.2.*"
   },
   "require-dev": {
     "laravel/pint": "^1.4",

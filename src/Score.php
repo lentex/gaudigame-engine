@@ -6,18 +6,13 @@ use Lentex\Gaudigame\Engine\Contracts\Score as ScoreContract;
 
 class Score implements ScoreContract
 {
-    private int $home;
-    private int $away;
     private bool $isDraw = false;
     private bool $isHomeWin = false;
     private bool $isAwayWin = false;
     private int $margin = 0;
 
-    public function __construct(int $home, int $away)
+    public function __construct(private int $home, private int $away)
     {
-        $this->home = $home;
-        $this->away = $away;
-
         $this->setupCalculationBasis();
     }
 
