@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+declare(strict_types=1);
 
 use Lentex\Gaudigame\Engine\DefaultCalculationModel;
 use Lentex\Gaudigame\Engine\MatchCalculator;

@@ -5,7 +5,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [ "8.2" ]
+        php: [ "8.3" ]
 
     runs-on: [self-hosted, linux, x64]
     name: PHP@${{ matrix.php }}
@@ -22,6 +22,8 @@ jobs:
 
       - name: Install composer dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
+        env:
+          COMPOSER_ALLOW_SUPERUSER: 1
 
       - name: Run Testsuite
         run: composer run-script test
@@ -31,3 +33,6 @@ jobs:
 
       - name: Run Static Analysis
         run: composer run-script analyse
+
+      - name: Run Type Coverage
+        run: composer run-script coverage:type

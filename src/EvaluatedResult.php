@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Lentex\Gaudigame\Engine;
 
-class EvaluatedResult
+final class EvaluatedResult
 {
     private float $points = 0.0;
     private bool $boost = false;

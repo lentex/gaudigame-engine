@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Lentex\Gaudigame\Engine;
 
 use Lentex\Gaudigame\Engine\Contracts\Score as ScoreContract;
 
-class Score implements ScoreContract
+final class Score implements ScoreContract
 {
     private bool $isDraw = false;
     private bool $isHomeWin = false;
     private bool $isAwayWin = false;
     private int $margin = 0;
 
-    public function __construct(private int $home, private int $away)
+    public function __construct(private readonly int $home, private readonly int $away)
     {
         $this->setupCalculationBasis();
     }

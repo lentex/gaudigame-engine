@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Lentex\Gaudigame\Engine;
 
 use Lentex\Gaudigame\Engine\Contracts\Score;
 
-class NoScore implements Score
+final class NoScore implements Score
 {
     public function home(): int
     {
