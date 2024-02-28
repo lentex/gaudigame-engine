@@ -3,21 +3,17 @@
   "type": "package",
   "description": "The Gaudigame Engine",
   "require": {
-    "php": "8.2.*"
+    "php": "8.3.*"
   },
   "require-dev": {
-    "laravel/pint": "^1.4",
-    "pestphp/pest": "^1.22",
-    "phpstan/phpstan": "^1.9"
+    "laravel/pint": "^1.14",
+    "pestphp/pest": "^2.34",
+    "pestphp/pest-plugin-type-coverage": "^2.8",
+    "phpstan/phpstan": "^1.10.59"
   },
   "autoload": {
     "psr-4": {
       "Lentex\\Gaudigame\\Engine\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests/"
     }
   },
   "scripts": {
@@ -26,6 +22,10 @@
     "lint:verbose": "pint -v --test",
     "fix": "pint",
     "test": "pest",
+    "test:all": "@test",
+    "test:unit": "pest --group=unit",
+    "test:architecture": "pest --group=architecture",
+    "coverage:type": "pest --type-coverage --min=100",
     "coverage": "pest --coverage --ci --coverage-html coverage --coverage-clover coverage.xml --log-junit junit.xml",
     "report": "pest --coverage",
     "report:html": "pest --coverage --coverage-html coverage"
@@ -34,7 +34,8 @@
     "optimize-autoloader": true,
     "sort-packages": true,
     "allow-plugins": {
-      "pestphp/pest-plugin": true
+      "pestphp/pest-plugin": true,
+      "pestphp/pest-plugin-type-coverage": true
     }
   },
   "prefer-stable": true,

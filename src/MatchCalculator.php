@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Lentex\Gaudigame\Engine;
 
 use Lentex\Gaudigame\Engine\Contracts\CalculationModel;
 use Lentex\Gaudigame\Engine\Contracts\Score;
 
-class MatchCalculator
+final class MatchCalculator
 {
-    private const DEFAULT_POINTS = 0.0;
-    private const DEFAULT_BOOST = 1.0;
+    private const float DEFAULT_POINTS = 0.0;
+    private const float DEFAULT_BOOST = 1.0;
 
     private float $points = self::DEFAULT_POINTS;
     private float $boost = self::DEFAULT_BOOST;

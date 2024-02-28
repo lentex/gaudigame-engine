@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Lentex\Gaudigame\Engine\NoScore;
 
 test('public no score methods', function () {

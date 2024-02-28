@@ -14,10 +14,14 @@ parameters:
         # @see https://pestphp.com/docs/underlying-test-case
         -
             message: '#^Undefined variable: \$this$#'
-            paths:
-                - tests/*
+            reportUnmatched: false
+            path: tests/*
         -
-            message: '#^Call to an undefined method Pest\\Expectation\|Pest\\Support\\Extendable\:\:[a-zA-Z]+\(\)\.$#'
-            paths:
-                - tests/*
+            message: '#^Call to an undefined method Pest\\Expectation<([a-zA-Z|\\\\]+)>\:\:[a-zA-Z]+\(\)\.$#'
+            reportUnmatched: false
+            path: tests/*
+        -
+            message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\:\\:expect\\(\\)\\.$#"
+            reportUnmatched: false
+            path: tests/*
 
