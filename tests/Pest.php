@@ -19,7 +19,7 @@ expect()->extend('toBeNoGuess', function () {
     return $this;
 });
 
-expect()->extend('toBeExactGuess', function (float $boost = null) {
+expect()->extend('toBeExactGuess', function (?float $boost = null) {
     $expectedPoints = (float) (new DefaultCalculationModel())->getPointsForExactGuess();
     $expectedPoints = $boost ? $expectedPoints * $boost : $expectedPoints;
 
@@ -33,7 +33,7 @@ expect()->extend('toBeExactGuess', function (float $boost = null) {
     return $this;
 });
 
-expect()->extend('toBeWrongGuess', function (float $boost = null) {
+expect()->extend('toBeWrongGuess', function (?float $boost = null) {
     $expectedPoints = (float) (new DefaultCalculationModel())->getPointsForWrongGuess();
     $expectedPoints = $boost ? $expectedPoints * $boost : $expectedPoints;
 
@@ -47,7 +47,7 @@ expect()->extend('toBeWrongGuess', function (float $boost = null) {
     return $this;
 });
 
-expect()->extend('toBeExactGapGuess', function (float $boost = null) {
+expect()->extend('toBeExactGapGuess', function (?float $boost = null) {
     $expectedPoints = (float) (new DefaultCalculationModel())->getPointsForExactGap();
     $expectedPoints = $boost ? $expectedPoints * $boost : $expectedPoints;
 
@@ -61,7 +61,7 @@ expect()->extend('toBeExactGapGuess', function (float $boost = null) {
     return $this;
 });
 
-expect()->extend('toBeCorrectTendencyGuess', function (float $boost = null) {
+expect()->extend('toBeCorrectTendencyGuess', function (?float $boost = null) {
     $expectedPoints = (float) (new DefaultCalculationModel())->getPointsForTendency();
     $expectedPoints = $boost ? $expectedPoints * $boost : $expectedPoints;
 
@@ -75,7 +75,7 @@ expect()->extend('toBeCorrectTendencyGuess', function (float $boost = null) {
     return $this;
 });
 
-expect()->extend('toBeDrawGapGuess', function (float $boost = null) {
+expect()->extend('toBeDrawGapGuess', function (?float $boost = null) {
     $expectedPoints = (float) (new DefaultCalculationModel())->getPointsForDrawGap();
     $expectedPoints = $boost ? $expectedPoints * $boost : $expectedPoints;
 
