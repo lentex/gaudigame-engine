@@ -21,3 +21,7 @@ parameters:
             message: "#^Access to an undefined property PHPUnit\\\\Framework\\\\TestCase\\:\\:\\$#"
             path: tests/*
 
+        -
+            identifier: method.nonObject
+            path: tests/*
+
