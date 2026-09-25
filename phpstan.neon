@@ -1,3 +1,6 @@
+includes:
+    - vendor/pestphp/pest-plugin-phpstan/extension.neon
+
 parameters:
     paths:
         - src
@@ -9,19 +12,10 @@ parameters:
 
     ignoreErrors:
         -
-            message: '#^Undefined variable: \$this$#'
-            path: tests/*
-        -
             message: '#^Call to an undefined method Pest\\Expectation<([a-zA-Z|\\\\]+)>\:\:[a-zA-Z]+\(\)\.$#'
+            identifier: method.notFound
             path: tests/*
         -
-            message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\:\\:expect\\(\\)\\.$#"
-            path: tests/*
-        -
-            message: "#^Access to an undefined property PHPUnit\\\\Framework\\\\TestCase\\:\\:\\$#"
-            path: tests/*
-
-        -
-            identifier: method.nonObject
-            path: tests/*
-
+            message: '#^Call to an undefined method Pest\\Expectations\\HigherOrderExpectation\<Pest\\Expectation\<null\>, null\>\:\:[a-zA-Z]+\(\)\.$#'
+            identifier: method.notFound
+            path: tests/Pest.php

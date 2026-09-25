@@ -4,3 +4,4 @@ composer.lock
 coverage.xml
 /coverage/
 junit.xml
+.idea
